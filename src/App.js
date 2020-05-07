@@ -1,33 +1,20 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import SimpleMenu   from './menu/SimpleMenu';
-import FormatJson   from './demo/FormatJson/FormatJson';
-import ManageForms    from './demo/ManageForms/ManageForms';
-import ManageData    from './demo/ManageData/ManageData';
-import JsonFormExample     from './demo/DynamicForm/JsonFormExample';
-
+import SimpleMenu from "./menu/SimpleMenu";
+import FormatJson from "./demo/FormatJson/FormatJson";
+import ManageForms from "./demo/ManageForms/ManageForms";
+import ManageData from "./demo/ManageData/ManageData";
+import JsonFormExample from "./demo/DynamicForm/JsonFormExample";
 
 //import dataLoaderAndFilter from "./dataLoaderAndFilter";
 
-
 export default function App(props) {
-
-
-    return (
-      <div>
-
+  return (
+    <div>
       <Router>
-
-        <SimpleMenu selectedMenu={''} >
-        </SimpleMenu>
-
-        <hr/>
-        
+        <SimpleMenu selectedMenu={""} />
+        <hr />
         <Switch>
           <Route path="/FormatJson">
             <FormatJson />
@@ -36,7 +23,7 @@ export default function App(props) {
             <ManageForms />
           </Route>
           <Route path="/ManageData">
-            <ManageData  />
+            <ManageData />
           </Route>
           <Route path="/JsonFormExample">
             <JsonFormExample />
@@ -46,10 +33,6 @@ export default function App(props) {
           </Route>
         </Switch>
       </Router>
-
-      </div>
-      
-    );
-  
+    </div>
+  );
 }
-
