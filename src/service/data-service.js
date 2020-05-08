@@ -1,7 +1,6 @@
+import {serviceUrl} from '../env.js';
 
-var baseUrl = 
-  // 'http://localhost:1234/'; 
-     'https://generic-db.glitch.me/';
+
 
 /**
  * ex searchText='type=FORM'
@@ -10,7 +9,7 @@ export async function findItems(searchText) {
   console.log(`filter with ${searchText}`);
 
   let path = 'items' + (searchText? '?'+searchText : '');
-  let url = baseUrl + path;
+  let url = serviceUrl + path;
   let res = await fetch(url);
 
   let json = await res.json();
@@ -23,7 +22,7 @@ export async function findItemById(id) {
   console.log(`find by id ${id}`);
 
   let path = 'items/' +id;
-  let url = baseUrl + path;
+  let url = serviceUrl + path;
   let res = await fetch(url);
 
   let json = await res.json();
@@ -37,7 +36,7 @@ export async function deleteItemById(id) {
   console.log(`delete by id ${id}`);
 
   let path = 'items/' +id+ '/delete';
-  let url = baseUrl + path;
+  let url = serviceUrl + path;
   let res = await fetch(url, {
     method: 'DELETE',
     mode: 'cors',
@@ -55,7 +54,7 @@ export async function saveItem(item) {
   console.log(`save`, item);
 
   let path = 'items/save';
-  let url = baseUrl + path;
+  let url = serviceUrl + path;
   let res = await fetch(url,  {
     method: 'POST',
     headers: new Headers({

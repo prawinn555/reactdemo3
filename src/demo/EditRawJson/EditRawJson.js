@@ -2,19 +2,22 @@ import React, { PureComponent } from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Alert from 'react-bootstrap/Alert';
+import AutoFocusAlert from '../Alert/AutoFocusAlert';
 import ReactJson from 'react-json-view';
 import { findItemById, saveItem, formatJson } from '../../service/data-service';
 
 class EditRawJson extends PureComponent {
   constructor(props) {
 	super(props);
-	
-	if(props.itemId) {
-		this.state = { 
-			success : 'Loading...'
-		};
-		findItemById(props.itemId).then(
+	this.state = { 
+			alert : 'Loading...',
+			alertVariant : 'info'
+	};
+ }
+
+ componentDidMount() {
+	if(this.props.itemId) {
+		findItemById(this.props.itemId).then(
 			(data) => {
 				if(data.length>0) {
 					let formattedObject = formatJson(data[0].content);
@@ -22,38 +25,29 @@ class EditRawJson extends PureComponent {
 						...data[0],
 						idReadOnly : true,
 						formattedObject,
-						ready : true,
-						success : '',
-						error : ''
 					});
-					
+					this.showSuccess('');
 				} else {
-					this.setState( {error : 'Error : not found'});
+					this.showError('Error : not found');
 				}
 			}, 
 			(err) => {
-				this.setState( {error : 'Error while loading : ' +err});
+				this.showError('Error while loading : ' +err);
 			}
 		);
 	} else {
 		// if ID not provided,
 		// we show emptyForm.
 		let content = '';
-		this.state = {
+		this.setState({
 			formattedObject : formatJson(content),
 			id : '',
 			description : '',
 			content : content,
 			type : this.props.objectType,
-			ready : true,
-			success : '',
-			error : ''
-		};
+		});
+		this.showSuccess('');
 	}
-
-
-
-
   }
 
   handleFormChange = (ev) => {
@@ -65,6 +59,7 @@ class EditRawJson extends PureComponent {
 
   save = async () => {
 	try {
+	  this.showInfo('Saving...');
 	  let obj = formatJson(this.state.content);
 	  let res = await saveItem({
 		id : this.state.id,
@@ -72,21 +67,21 @@ class EditRawJson extends PureComponent {
 		description : this.state.description,
 		content : this.state.content
 	  });
-	  console.log('result', res);
+	  // console.log('result', res);
 	  if(this.props.callbackRefresh) {
 		  this.props.callbackRefresh();
 	  }
 	  this.setState( {
-		  success : (res.status==='OK')? res.message : null,
-		  error : (res.status!=='OK')? res.message : null,
 		  formattedObject : obj
 	  });
+	  if(res.status==='OK') {
+		this.showSuccess(res.message);
+	  } else {
+		this.showError(res.message);
+	  }
 	} catch(err) {
 	  console.log(err);
-	  this.setState( {
-		  success : null,
-		  error : 'error ' +err,
-	  });
+	  this.showError('Error ' +err);
 	}
   };
 
@@ -98,20 +93,27 @@ class EditRawJson extends PureComponent {
 	return Math.min(lines.length + 1, 10);
   }
 
+	showError = (err) => {
+			this.setState({ alert: err, alertVariant : 'danger'});
+	};
+	showWarn = (msg) => {
+			this.setState({ alert: msg, alertVariant : 'warning' });
+	};
+	showSuccess = (msg) => {
+			this.setState({ alert: msg, alertVariant : 'success', ready : true});
+	};
+	showInfo = (msg) => {
+			this.setState({  alert: msg, alertVariant : 'info' });
+	};
+
+
   render() {
     return (
       <div className="px-2" >
 
-		{ this.state.success &&
-			<Alert variant='success' >
-				{this.state.success}
-			</Alert>
-		}
-		{ this.state.error &&
-			<Alert variant='danger' >
-				{this.state.error}
-			</Alert>
-		}
+		<AutoFocusAlert alert={this.state.alert} alertVariant={this.state.alertVariant} >
+		</AutoFocusAlert>
+
 		{ this.state.ready &&
 			<>
 				<Form>
