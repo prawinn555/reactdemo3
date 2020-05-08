@@ -37,7 +37,7 @@ class SimpleMenu extends PureComponent {
       <div className="row">
         
         {icons.rabbitFace}
-        Welcome !!! <a target="__BLANK" href="https://github.com/prawinn555/reactdemo">Readme</a>
+        Welcome !!!! <a target="__BLANK" href="https://github.com/prawinn555/reactdemo">Readme</a>
         {icons.rabbit}
 
 
